@@ -1,9 +1,9 @@
 package main
 
 import (
-	"fmt"
-	"sync"
-	"time"
+	"fmt" // Deals with IO interactions
+	"sync" // Used to sync up the waiting time
+	"time" // Used to set up the waiting time
 )
 
 const ConferenceTickets = 50
@@ -11,6 +11,7 @@ var ConferenceName = "Go Conference"
 var RemainingTickets uint = 50
 var bookings = make([]UserData, 0)
 
+// A structure of the user data
 type UserData struct {
 	firstName string
 	lastName string
@@ -18,13 +19,12 @@ type UserData struct {
 	numberOfTickets uint
 }
 
+// Setting up the wait group
 var wg = sync.WaitGroup{}
 
 func main(){
 	//Landing terminal
 	greetUsers()
-	
-	// Loop to book the tickets
 
 	// Call the user input function
 	firstName, lastName, email, userTicket := getUserInput()
@@ -32,6 +32,7 @@ func main(){
 	// Call function validUserInput
 	isValidName, isValidEmail, isValidTicketNumber := validateUserInput(firstName, lastName, email, userTicket)
 
+	// Runs when all 3 variables are true
 	if isValidName && isValidEmail && isValidTicketNumber {
 		// Call book ticket function
 		bookTicket(userTicket, firstName, lastName, email)
@@ -51,6 +52,7 @@ func main(){
 			fmt.Println("Our conference is booked out. Come back next year.")
 			//break
 		}
+		// If any of the user input is incorrect, it displays what needs to be done
 	} else {
 		if !isValidName {
 			fmt.Println("First name or last name you entered is too short")
@@ -62,6 +64,7 @@ func main(){
 			fmt.Println("Number of tickets you entered is invalid")
 		}
 	}
+	// Now it waits for the tickets to be sent
 	wg.Wait()
 }	
 
@@ -72,6 +75,7 @@ func greetUsers(){
 	fmt.Println("Get your tickets here to attend")
 }
 
+// Extracting the first name
 func getFirstName() []string {
 	firstNames := []string{}
 	for _, booking := range bookings {
@@ -80,6 +84,7 @@ func getFirstName() []string {
 	return firstNames
 }
 
+// Accepts user inputs and stores in respective variables
 func getUserInput() (string, string, string, uint) {
 	var firstName string
 	var lastName string
@@ -105,6 +110,7 @@ func getUserInput() (string, string, string, uint) {
 	return firstName, lastName, email, userTicket
 }
 
+// Booking tickets functionality
 func bookTicket (userTicket uint, firstName string, lastName string, email string) {
 	RemainingTickets = RemainingTickets - userTicket
 
@@ -123,6 +129,7 @@ func bookTicket (userTicket uint, firstName string, lastName string, email strin
 	fmt.Printf("%v tickets remaining for %v.\n", RemainingTickets, ConferenceName)
 }
 
+// For now we're simulating the time for sending the tickets to email
 func sendTicket(userTicket uint, firstName string, lastName string, email string) {
 	time.Sleep(10 * time.Second)
 	var ticket = fmt.Sprintf("%v tickets for %v %v", userTicket, firstName, lastName)
